@@ -1,19 +1,28 @@
+import rules.DivisibilityRule;
+import rules.RuleInterface;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class Main {
     public static void main(String[] args) {
         StringBuilder stringBuilder = new StringBuilder();
-        for(int i = 1; i <= 20; i++){
-            boolean matched = false;
-            if(i % 3 == 0){
-                stringBuilder.append("LOW");
-                matched = true;
-            }
 
-            if(i % 5 == 0){
-                stringBuilder.append("ADVISORY");
-                matched = true;
-            }
-            if (!matched){
-                stringBuilder.append(i);
+        DivisibilityRule divisibleByThree = new DivisibilityRule(3,"LOW");
+        DivisibilityRule divisibleByFive = new DivisibilityRule(5,"ADVISORY");
+
+        List<RuleInterface> rules = new ArrayList<>();
+        rules.add(divisibleByThree);
+        rules.add(divisibleByFive);
+
+        for(int i = 1; i <= 20; i++){
+            int finalI = i;
+            String alerts = rules.stream().filter(rule -> rule.match(finalI)).map(RuleInterface::getAlert).collect(Collectors.joining());
+            if (alerts.isEmpty()) {
+                stringBuilder.append(finalI);
+            } else {
+                stringBuilder.append(alerts);
             }
             stringBuilder.append("\n");
 
